@@ -1,13 +1,26 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Project
+from django.core.paginator import Paginator, EmptyPage,\
+                                  PageNotAnInteger
 
 
 # Create your views here.
 def project_list(request):
-    projects = Project.published.all()
+    object_list = Project.published.all()
+    paginator = Paginator(object_list, 3)  # 3 projects in each page
+    page = request.GET.get('page')
+    try:
+        projects = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is note an integer deliver the first page
+        projects = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range deliver last page of results
+        projects = paginator.page(paginator.num_pages)
     return render(request,
                   'portfolio/project/list.html',
-                  {'projects': projects})
+                  {'page': page,
+                   'projects': projects})
 
 
 def project_detail(request, year, month, day, project):
