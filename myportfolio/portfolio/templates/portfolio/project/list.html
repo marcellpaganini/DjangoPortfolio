@@ -1,0 +1,17 @@
+{% extends "portfolio/base.html" %}
+{% block title %}My Portfolio{% endblock %}
+{% block content %}
+
+    <h1>My Portfolio</h1>
+    {% for project in projects %}
+        <h2>
+            <a href="{{ project.get_absolute_url }}">
+                {{ project.title }}
+            </a>
+        </h2>
+        <p class="date">
+            Published {{ project.publish }} by {{ project.author }}
+        </p>
+        {{ project.body|truncatewords:30|linebreaks }}
+    {% endfor %}
+{% endblock %}
